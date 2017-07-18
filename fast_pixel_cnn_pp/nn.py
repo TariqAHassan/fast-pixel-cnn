@@ -122,7 +122,7 @@ def sample_from_discretized_mix_logistic(l, nr_mix, seed=None):
 
 
 def get_var_maybe_avg(var_name, ema, **kwargs):
-    ''' utility for retrieving polyak averaged params '''
+    """ utility for retrieving polyak averaged params """
     v = tf.get_variable(var_name, **kwargs)
     if ema is not None:
         v = ema.average(v)
@@ -130,7 +130,7 @@ def get_var_maybe_avg(var_name, ema, **kwargs):
 
 
 def get_vars_maybe_avg(var_names, ema, **kwargs):
-    ''' utility for retrieving polyak averaged params '''
+    """ utility for retrieving polyak averaged params """
     vars = []
     for vn in var_names:
         vars.append(get_var_maybe_avg(vn, ema, **kwargs))
@@ -138,7 +138,7 @@ def get_vars_maybe_avg(var_names, ema, **kwargs):
 
 
 def adam_updates(params, cost_or_grads, lr=0.001, mom1=0.9, mom2=0.999):
-    ''' Adam optimizer '''
+    """ Adam optimizer """
     updates = []
     if type(cost_or_grads) is not list:
         grads = tf.gradients(cost_or_grads, params)
@@ -165,7 +165,7 @@ def adam_updates(params, cost_or_grads, lr=0.001, mom1=0.9, mom2=0.999):
 
 
 def get_name(layer_name, counters):
-    ''' utlity for keeping track of layer names '''
+    """ utlity for keeping track of layer names """
     if not layer_name in counters:
         counters[layer_name] = 0
     name = layer_name + '_' + str(counters[layer_name])
@@ -175,7 +175,7 @@ def get_name(layer_name, counters):
 
 @add_arg_scope
 def dense(x, num_units, nonlinearity=None, init_scale=1., counters={}, init=False, ema=None, **kwargs):
-    ''' fully connected layer '''
+    """ fully connected layer """
     name = get_name('dense', counters)
     with tf.variable_scope(name):
         if init:
@@ -216,7 +216,7 @@ def dense(x, num_units, nonlinearity=None, init_scale=1., counters={}, init=Fals
 @add_arg_scope
 def conv2d(x, num_filters, filter_size=[3, 3], stride=[1, 1], pad='SAME', nonlinearity=None,
            init_scale=1., counters={}, init=False, ema=None, **kwargs):
-    ''' convolutional layer '''
+    """ convolutional layer """
     name = get_name('conv2d', counters)
     with tf.variable_scope(name):
         if init:
@@ -255,7 +255,7 @@ def conv2d(x, num_filters, filter_size=[3, 3], stride=[1, 1], pad='SAME', nonlin
 def deconv2d(x, num_filters, filter_size=[3, 3], stride=[1, 1], pad='SAME',
              nonlinearity=None, init_scale=1., counters={},
              init=False, ema=None, **kwargs):
-    ''' transposed convolutional layer '''
+    """ transposed convolutional layer """
     name = get_name('deconv2d', counters)
     xs = int_shape(x)
     if pad == 'SAME':
@@ -306,7 +306,7 @@ def nin(x, num_units, **kwargs):
     return tf.reshape(x, s[:-1] + [num_units])
 
 
-''' meta-layer consisting of multiple base layers '''
+""" meta-layer consisting of multiple base layers """
 
 
 @add_arg_scope
@@ -338,7 +338,7 @@ def gated_resnet(x, a=None, h=None, nonlinearity=concat_elu,
     return x + c3
 
 
-''' utilities for shifting the image around, efficient alternative to masking convolutions '''
+""" utilities for shifting the image around, efficient alternative to masking convolutions """
 
 
 def down_shift(x):

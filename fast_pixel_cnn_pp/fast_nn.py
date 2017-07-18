@@ -17,21 +17,21 @@ RESET_CACHE_COLLECTION = 'reset_cache'
 
 
 def down_shift(image):
-    '''Shift all rows down by one, using zeros as the first row and throwing away the last row.'''
+    """Shift all rows down by one, using zeros as the first row and throwing away the last row."""
     all_image_except_last_row = image[:, :-1, :, :]
     zero_row = np.zeros_like(image[:, :1, :, :])
     return np.concatenate([zero_row, all_image_except_last_row], axis=1)
 
 
 def right_shift(image):
-    '''Shift all columns right by one, using zeros as the first column and throwing away the last column.'''
+    """Shift all columns right by one, using zeros as the first column and throwing away the last column."""
     all_image_except_last_column = image[:, :, :-1, :]
     zero_column = np.zeros_like(image[:, :, :1, :])
     return np.concatenate([zero_column, all_image_except_last_column], axis=2)
 
 
 def _extract_layer_info(network_info, input_, nonlinearity):
-    '''Utility function to extract information about the current layer.'''
+    """Utility function to extract information about the current layer."""
     image_size, filter_size = network_info
     batch, image_height, image_width, image_channels = image_size
     filter_height, filter_width, filter_channels = filter_size
@@ -44,7 +44,7 @@ def _extract_layer_info(network_info, input_, nonlinearity):
 
 
 def _create_cache(batch, cache_height, cache_width, channels):
-    '''Creates a cache, which is used to avoid redundant computation.'''
+    """Creates a cache, which is used to avoid redundant computation."""
     cache = tf.Variable(
         initial_value=np.zeros((batch, cache_height, cache_width, channels)),
         dtype=tf.float32,
@@ -57,12 +57,12 @@ def _create_cache(batch, cache_height, cache_width, channels):
 
 
 def reset_cache_op():
-    '''Returns an op to reset all created caches. Used between different generation calls.'''
+    """Returns an op to reset all created caches. Used between different generation calls."""
     return tf.group(*tf.get_collection(RESET_CACHE_COLLECTION))
 
 
 def _get_conv_variables(filter_size, input_channels, scope_name, counters):
-    '''Creates and returns variables used for convolution.'''
+    """Creates and returns variables used for convolution."""
     filter_height, filter_width, filter_channels = filter_size
     with tf.variable_scope(nn.get_name(scope_name, counters)):
         V = tf.get_variable(
@@ -75,7 +75,7 @@ def _get_conv_variables(filter_size, input_channels, scope_name, counters):
 
 
 def _get_conv2d_variables(filter_size, input_channels, counters):
-    '''Creates and returns the variables used for a normal 2D convolution.'''
+    """Creates and returns the variables used for a normal 2D convolution."""
     V, g, b = _get_conv_variables(filter_size, input_channels, 'conv2d',
                                   counters)
     filter_channels = filter_size[-1]
@@ -85,7 +85,7 @@ def _get_conv2d_variables(filter_size, input_channels, counters):
 
 
 def _get_deconv2d_variables(filter_size, input_channels, counters):
-    '''Creates and returns the variables used for a 2D transposed convolution (deconvolution).'''
+    """Creates and returns the variables used for a 2D transposed convolution (deconvolution)."""
     V, g, b = _get_conv_variables(filter_size, input_channels, 'deconv2d',
                                   counters)
     filter_channels = filter_size[-1]
@@ -95,12 +95,12 @@ def _get_deconv2d_variables(filter_size, input_channels, counters):
 
 
 def _mod_equal_0(row_or_col, every):
-    '''Returns a boolean tensor representing (row_or_col % every == 0)'''
+    """Returns a boolean tensor representing (row_or_col % every == 0)"""
     return tf.equal(tf.mod(row_or_col, every), 0)
 
 
 def _roll_cache(cache):
-    '''Pop off the oldest row of the cache to make space for the newest row of input.'''
+    """Pop off the oldest row of the cache to make space for the newest row of input."""
     batch, _, cache_width, channels = cache.get_shape()
     without_dropped_row = cache[:, 1:, :, :]
     zero_row = tf.zeros([batch, 1, cache_width, channels])
@@ -117,7 +117,7 @@ def down_shifted_conv2d(row_input,
                         run_every,
                         nonlinearity=None,
                         counters={}):
-    '''Performs a convolution for the vertical stack.'''
+    """Performs a convolution for the vertical stack."""
     li = _extract_layer_info(network_info, row_input, nonlinearity)
 
     ## Create cache.
@@ -166,7 +166,7 @@ def down_right_shifted_conv2d(pixel_input,
                               run_every,
                               nonlinearity=None,
                               counters={}):
-    '''Performs a convolution for the horizontal stack.'''
+    """Performs a convolution for the horizontal stack."""
     li = _extract_layer_info(network_info, pixel_input, nonlinearity)
 
     ## Create cache.
@@ -220,7 +220,7 @@ def down_right_shifted_conv2d(pixel_input,
 
 
 def _create_deconv_cache(li, stride):
-    '''Creates the cache for the two deconv layers.'''
+    """Creates the cache for the two deconv layers."""
     cache_height = li.filter_height  # Just large enough to fit the filter.
     # The deconv will increases the number of outputs `stride` times. 
     # The extra width comes from the tf.nn.conv2d_transpose() operation.
@@ -239,7 +239,7 @@ def down_shifted_deconv2d(row_input,
                           stride=2,
                           nonlinearity=None,
                           counters={}):
-    '''Performs a transposed convolution for the vertical stack.'''
+    """Performs a transposed convolution for the vertical stack."""
     li = _extract_layer_info(network_info, row_input, nonlinearity)
 
     ## Create cache.
@@ -303,7 +303,7 @@ def down_right_shifted_deconv2d(pixel_input,
                                 stride=2,
                                 nonlinearity=None,
                                 counters={}):
-    '''Performs a transposed convolution for the horizontal stack.'''
+    """Performs a transposed convolution for the horizontal stack."""
     li = _extract_layer_info(network_info, pixel_input, nonlinearity)
 
     ## Create cache.
@@ -365,13 +365,13 @@ def down_right_shifted_deconv2d(pixel_input,
 
 
 def sum_rightshift_downshift(rightshifted_pixel, downshifted_row, col):
-    '''Sums the vertical and horizontal stack.'''
+    """Sums the vertical and horizontal stack."""
     downshifted_pixel = downshifted_row[:, :, col:(col + 1), :]
     return rightshifted_pixel + downshifted_pixel
 
 
 def _conditional_info(h, batch, filter_channels, counters):
-    '''Computes the conditional information for the resnet layer.'''
+    """Computes the conditional information for the resnet layer."""
     with tf.variable_scope(nn.get_name('conditional_weights', counters)):
         hw = tf.get_variable(
             'hw',
@@ -399,7 +399,7 @@ def gated_resnet_vstack_only(row_input,
                              h=None,
                              nonlinearity=None,
                              counters={}):
-    '''Performs gated resnet computations for the vertical stack.'''
+    """Performs gated resnet computations for the vertical stack."""
     li = _extract_layer_info(network_info, row_input, nonlinearity)
 
     out = li.nonlinearity(row_input)
@@ -451,7 +451,7 @@ def gated_resnet_hstack(pixel_input,
                         h=None,
                         nonlinearity=None,
                         counters={}):
-    '''Performs gated resnet computations for the horizontal stack.'''
+    """Performs gated resnet computations for the horizontal stack."""
     li = _extract_layer_info(network_info, pixel_input, nonlinearity)
 
     out = li.nonlinearity(pixel_input)
