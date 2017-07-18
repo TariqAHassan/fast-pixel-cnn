@@ -51,7 +51,7 @@ def dense(x, num_units, nonlinearity=None, init_scale=1., counters={}, init=Fals
 
 
 @add_arg_scope
-def conv2d(x, num_filters, filter_size=[3, 3], stride=[1, 1], pad='SAME', nonlinearity=None,
+def conv2d(x, num_filters, filter_size=(3, 3), stride=(1, 1), pad='SAME', nonlinearity=None,
            init_scale=1., counters={}, init=False, ema=None, **kwargs):
     """Convolutional layer """
     name = get_name('conv2d', counters)
@@ -89,7 +89,7 @@ def conv2d(x, num_filters, filter_size=[3, 3], stride=[1, 1], pad='SAME', nonlin
 
 
 @add_arg_scope
-def deconv2d(x, num_filters, filter_size=[3, 3], stride=[1, 1], pad='SAME',
+def deconv2d(x, num_filters, filter_size=(3, 3), stride=(1, 1), pad='SAME',
              nonlinearity=None, init_scale=1., counters={},
              init=False, ema=None, **kwargs):
     """ Transposed convolutional layer """
