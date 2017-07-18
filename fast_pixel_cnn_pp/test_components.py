@@ -1,11 +1,9 @@
-from . import nn
-from . import fast_nn
-from fast_pixel_cnn_pp.layers import gated_resnet
-
-import tensorflow as tf
 import numpy as np
-
+import tensorflow as tf
+from fast_pixel_cnn_pp import nn
 from collections import namedtuple
+from fast_pixel_cnn_pp import fast_nn
+from fast_pixel_cnn_pp.layers import gated_resnet
 
 Placeholders = namedtuple(
     'Placeholders',
@@ -183,7 +181,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
             use_extra_pixel_input=True, use_h=True, num_layers=3)
 
     def _get_placeholders(self, image_size):
-        '''Creates all placeholders.'''
+        """Creates all placeholders."""
         batch_size, size, _, input_channels = image_size
         full_input = tf.placeholder(
             tf.float32, [batch_size, size, size, input_channels],
@@ -199,7 +197,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
 
     def _setup_test_equal(self, sess, nn_out, full_input, image_size,
                           output_image_size):
-        '''Sets up both _test_*_equals() methods by initializing variables and outputs.'''
+        """Sets up both _test_*_equals() methods by initializing variables and outputs."""
         np.random.seed(2702)
         x = np.random.randn(*image_size)
         # nn layers use data dependent initialization.
@@ -234,7 +232,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                          image_size,
                          output_image_size=None,
                          run_every=1):
-        '''Tests if vertical stack outputs (one row at a time) of our code and OpenAI code are equal.'''
+        """Tests if vertical stack outputs (one row at a time) of our code and OpenAI code are equal."""
         (x, ground_truth_output, fast_output, side_length,
          image_increase_factor) = self._setup_test_equal(
             sess, nn_out, placeholders.full_input, image_size,
@@ -275,7 +273,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                            output_image_size=None,
                            run_every=1,
                            atol=1e-6):
-        '''Tests if horizontal stack outputs (one pixel at a time) of our code and OpenAI code are equal.'''
+        """Tests if horizontal stack outputs (one pixel at a time) of our code and OpenAI code are equal."""
         (x, ground_truth_output, fast_output, side_length,
          image_increase_factor) = self._setup_test_equal(
             sess, nn_out, placeholders.full_input, image_size,
@@ -315,7 +313,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
 
     def _setup_conv_tests(self, batch_size, size, channels, filter_size,
                           strides, layers, num_layers):
-        '''Sets up the conv tests by computing basic layer information.'''
+        """Sets up the conv tests by computing basic layer information."""
         image_size = (batch_size, size, size, channels)
         full_filter_size = filter_size + [channels]
         if strides is None:
@@ -328,7 +326,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
 
     def _compute_conv_fast_nn_out(self, compute_output_func, network_input,
                                   image_size, strides, layers):
-        '''Computes cached convolutions, handling downsampling and upsampling.'''
+        """Computes cached convolutions, handling downsampling and upsampling."""
         batch_size, size, _, nr_filters = image_size
         num_layers = len(layers)
 
@@ -389,10 +387,10 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                            strides=None,
                            layers=None,
                            nonlinearity=tf.sigmoid):
-        '''Tests the down_shifted convolution for the vertical stack.'''
+        """Tests the down_shifted convolution for the vertical stack."""
 
         def get_conv_function(module, layer_type):
-            '''Returns the matching conv or deconv function.'''
+            """Returns the matching conv or deconv function."""
             if layer_type == 'conv':
                 return module.down_shifted_conv2d
             elif layer_type == 'deconv':
@@ -464,10 +462,10 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                                  strides=None,
                                  layers=None,
                                  nonlinearity=tf.sigmoid):
-        '''Tests the down_shifted convolution for the vertical stack.'''
+        """Tests the down_shifted convolution for the vertical stack."""
 
         def get_conv_function(module, layer_type):
-            '''Returns the matching conv or deconv function.'''
+            """Returns the matching conv or deconv function."""
             if layer_type == 'conv':
                 return module.down_right_shifted_conv2d
             elif layer_type == 'deconv':
@@ -540,7 +538,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                                   use_h=False,
                                   use_extra_row_input=False,
                                   nonlinearity=tf.sigmoid):
-        '''Tests the gated resnet layers for the vertical stack.'''
+        """Tests the gated resnet layers for the vertical stack."""
         image_size = (batch_size, size, size, channels)
         full_filter_size = filter_size + [channels]
 
@@ -603,7 +601,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                              use_h=False,
                              use_extra_pixel_input=False,
                              nonlinearity=tf.sigmoid):
-        '''Tests the gated resnet layers for the horizontal stack.'''
+        """Tests the gated resnet layers for the horizontal stack."""
         image_size = (batch_size, size, size, channels)
         full_filter_size = filter_size + [channels]
 
@@ -665,7 +663,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                                        size=16,
                                        channels=7,
                                        nonlinearity=tf.sigmoid):
-        '''Tests the sum of the vertical and horizontal stack.'''
+        """Tests the sum of the vertical and horizontal stack."""
         image_size = (batch_size, size, size, channels)
 
         with self.test_session() as sess:
