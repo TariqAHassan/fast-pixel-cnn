@@ -1,11 +1,16 @@
-from . import nn
+"""
 
-import tensorflow as tf
-from tensorflow.contrib.framework.python.ops import add_arg_scope
-import numpy as np
+    Fast NN
+    ~~~~~~~
 
-from collections import namedtuple
+"""
 import math
+import numpy as np
+import tensorflow as tf
+from fast_pixel_cnn_pp import nn
+from collections import namedtuple
+from tensorflow.contrib.framework.python.ops import add_arg_scope
+from fast_pixel_cnn_pp.layers import nin
 
 LayerInfo = namedtuple('LayerInfo', [
     'image_size', 'batch', 'image_height', 'image_width', 'image_channels',
@@ -414,7 +419,7 @@ def gated_resnet_vstack_only(row_input,
         counters=counters)
     if extra_row_input is not None:
         # For skip connections between downsampling and upsampling layers.
-        out += nn.nin(
+        out += nin(
             li.nonlinearity(extra_row_input),
             li.filter_channels,
             counters=counters)
@@ -475,7 +480,7 @@ def gated_resnet_hstack(pixel_input,
         # For skip connections between downsampling and upsampling layers.
         v_stack_pixel = tf.concat([v_stack_pixel, extra_pixel_input], 3)
 
-    out += nn.nin(
+    out += nin(
         li.nonlinearity(v_stack_pixel), li.filter_channels, counters=counters)
     out = li.nonlinearity(out)
     network_info = (li.image_size, (li.filter_height, li.filter_width, 2 *

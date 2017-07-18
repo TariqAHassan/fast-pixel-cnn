@@ -1,11 +1,10 @@
 from . import nn
 from . import fast_nn
+from fast_pixel_cnn_pp.layers import gated_resnet
 
 import tensorflow as tf
 import numpy as np
 
-import math
-import unittest
 from collections import namedtuple
 
 Placeholders = namedtuple(
@@ -562,7 +561,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                 counters = {}
                 nn_out = placeholders.full_input
                 for _ in range(num_layers):
-                    nn_out = nn.gated_resnet(
+                    nn_out = gated_resnet(
                         nn_out,
                         a=a,
                         h=h,
@@ -624,7 +623,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                 counters = {}
                 nn_out = placeholders.full_input
                 for _ in range(num_layers):
-                    nn_out = nn.gated_resnet(
+                    nn_out = gated_resnet(
                         nn_out,
                         a=a,
                         h=h,

@@ -1,11 +1,8 @@
-from . import model
-from . import fast_nn
-
-import tensorflow as tf
-import numpy as np
-
 import os
-import unittest
+import numpy as np
+import tensorflow as tf
+from fast_pixel_cnn_pp import model
+from fast_pixel_cnn_pp import fast_nn
 
 
 class FastPixelCNNPPEndToEndTest(tf.test.TestCase):

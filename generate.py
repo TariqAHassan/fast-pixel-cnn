@@ -1,14 +1,18 @@
+"""
+
+    Generate
+    ~~~~~~~~
+
+"""
+import os
+import time
+import argparse
+import numpy as np
+import tensorflow as tf
+import matplotlib.pyplot as plt
 import fast_pixel_cnn_pp.model as model
 import fast_pixel_cnn_pp.fast_nn as fast_nn
 import fast_pixel_cnn_pp.plotting as plotting
-
-import tensorflow as tf
-import numpy as np
-import matplotlib.pyplot as plt
-
-import argparse
-import time
-import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-b', '--batch_size', type=int, default=16, help='Number of images to generate simultaneously')
