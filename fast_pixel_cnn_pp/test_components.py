@@ -238,8 +238,8 @@ class FastPixelCNNPPTest(tf.test.TestCase):
         '''Tests if vertical stack outputs (one row at a time) of our code and OpenAI code are equal.'''
         (x, ground_truth_output, fast_output, side_length,
          image_increase_factor) = self._setup_test_equal(
-             sess, nn_out, placeholders.full_input, image_size,
-             output_image_size)
+            sess, nn_out, placeholders.full_input, image_size,
+            output_image_size)
 
         # Generate fast output.
         for row in range(side_length):
@@ -259,7 +259,7 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                     # because the output is smaller than the input.
                     output_row = row_compensated // run_every
                     fast_output[:, output_row:(output_row + 1),
-                                                :, :] = row_output
+                    :, :] = row_output
 
         # Within a tolerance.
         self.assertTrue(np.allclose(ground_truth_output, fast_output))
@@ -279,8 +279,8 @@ class FastPixelCNNPPTest(tf.test.TestCase):
         '''Tests if horizontal stack outputs (one pixel at a time) of our code and OpenAI code are equal.'''
         (x, ground_truth_output, fast_output, side_length,
          image_increase_factor) = self._setup_test_equal(
-             sess, nn_out, placeholders.full_input, image_size,
-             output_image_size)
+            sess, nn_out, placeholders.full_input, image_size,
+            output_image_size)
 
         # Generate fast output.
         for row in range(side_length):
@@ -308,8 +308,8 @@ class FastPixelCNNPPTest(tf.test.TestCase):
                             output_row = row_compensated // run_every
                             output_col = col_compensated // run_every
                             fast_output[:, output_row:(output_row + 1),
-                                        output_col:(output_col + 1
-                                                    ), :] = pixel_output
+                            output_col:(output_col + 1
+                                        ), :] = pixel_output
 
         self.assertTrue(
             np.allclose(ground_truth_output, fast_output, atol=atol))

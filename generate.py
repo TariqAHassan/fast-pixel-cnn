@@ -11,32 +11,12 @@ import time
 import os
 
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    '-b',
-    '--batch_size',
-    type=int,
-    default=16,
-    help='Number of images to generate simultaneously')
-parser.add_argument(
-    '-i',
-    '--image_size',
-    type=int,
-    default=32,
-    help='Height and width of the image')
-parser.add_argument(
-    '-s', '--seed', type=int, default=2702, help='Seed for random generation')
-parser.add_argument(
-    '-c',
-    '--checkpoint',
-    type=str,
-    default='/home/mbz/pixel_cnn_pp/params_cifar.ckpt',
-    help='Location of the pretrained checkpoint')
-parser.add_argument(
-    '-v',
-    '--save_dir',
-    type=str,
-    default='/tmp',
-    help='Location to save generated images to')
+parser.add_argument('-b', '--batch_size', type=int, default=16, help='Number of images to generate simultaneously')
+parser.add_argument('-i', '--image_size', type=int, default=32, help='Height and width of the image')
+parser.add_argument('-s', '--seed', type=int, default=2702, help='Seed for random generation')
+parser.add_argument('-c', '--checkpoint', type=str, default='/home/mbz/pixel_cnn_pp/params_cifar.ckpt',
+                    help='Location of the pretrained checkpoint')
+parser.add_argument('-v', '--save_dir', type=str, default='/tmp', help='Location to save generated images to')
 args = parser.parse_args()
 
 g = tf.Graph()
@@ -106,7 +86,7 @@ with g.as_default():
                         (args.batch_size, 1, 1, input_channels))
                 else:
                     x_pixel_input = output_images[:, row:(row + 1),
-                                                  (col - 1):col, :]
+                                    (col - 1):col, :]
                     x_pixel_input = np.concatenate(
                         (x_pixel_input, np.ones((args.batch_size, 1, 1, 1))),
                         axis=3)
@@ -118,7 +98,7 @@ with g.as_default():
                 }
                 pixel_output = sess.run(sample, feed_dict)
                 output_images[:, row:(row + 1),
-                              col:(col + 1), :] = pixel_output
+                col:(col + 1), :] = pixel_output
 
         end_time = time.time()
         print('Time taken to generate %d images: %.2f seconds' %

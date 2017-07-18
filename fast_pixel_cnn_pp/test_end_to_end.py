@@ -72,7 +72,7 @@ class FastPixelCNNPPEndToEndTest(tf.test.TestCase):
 
                 for col in range(image_width):
                     x_pixel_input = x_rightshift[:, row:(row + 1),
-                                                 col:(col + 1), :]
+                                    col:(col + 1), :]
                     feed_dict = {
                         row_id: row,
                         col_id: col,

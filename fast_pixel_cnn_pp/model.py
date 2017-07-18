@@ -9,22 +9,22 @@ UPDATE_V_STACK = 'update_v_stack'
 
 
 def undo_zeroth_row_bias_when_downshifting(row_output, row):
-    '''The down_shifted_conv2d adds a bias to the row of all zeros. This removes that bias.'''
+    """The down_shifted_conv2d adds a bias to the row of all zeros. This removes that bias."""
     return tf.cond(
         tf.equal(row, 0), lambda: tf.zeros_like(row_output),
         lambda: row_output)
 
 
 def undo_zeroth_column_bias_when_rightshifting(pixel_output, col):
-    '''The down_shifted_conv2d adds a bias to the column of all zeros. This removes that bias.'''
+    """The down_shifted_conv2d adds a bias to the column of all zeros. This removes that bias."""
     return tf.cond(
         tf.equal(col, 0), lambda: tf.zeros_like(pixel_output),
         lambda: pixel_output)
 
 
 def cache_v_stack_variable(v_stack_variable):
-    '''Caches vertical stack hidden states. This avoids the need to pass the computed
-        vertical stack in the feed_dict, which would involve CPU to GPU transfers.'''
+    """Caches vertical stack hidden states. This avoids the need to pass the computed
+        vertical stack in the feed_dict, which would involve CPU to GPU transfers."""
     cache = tf.Variable(
         initial_value=np.zeros(v_stack_variable.get_shape().as_list()),
         name='v_stack_cache',
@@ -47,15 +47,15 @@ def model_spec(row_input,
                nr_logistic_mix=10,
                resnet_nonlinearity='concat_elu',
                seed=None):
-    '''Creates the model. Follows the same model_spec structure as the original PixelCNN++.'''
+    """Creates the model. Follows the same model_spec structure as the original PixelCNN++."""
     counters = {}
     with arg_scope(
-        [
-            fast_nn.down_shifted_conv2d, fast_nn.down_right_shifted_conv2d,
-            fast_nn.down_shifted_deconv2d, fast_nn.down_right_shifted_deconv2d,
-            fast_nn.gated_resnet_vstack_only, fast_nn.gated_resnet_hstack,
-            nn.dense
-        ],
+            [
+                fast_nn.down_shifted_conv2d, fast_nn.down_right_shifted_conv2d,
+                fast_nn.down_shifted_deconv2d, fast_nn.down_right_shifted_deconv2d,
+                fast_nn.gated_resnet_vstack_only, fast_nn.gated_resnet_hstack,
+                nn.dense
+            ],
             counters=counters):
 
         # Parse resnet nonlinearity argument.
@@ -70,7 +70,7 @@ def model_spec(row_input,
                    ' is not supported')
 
         with arg_scope(
-            [fast_nn.gated_resnet_vstack_only, fast_nn.gated_resnet_hstack],
+                [fast_nn.gated_resnet_vstack_only, fast_nn.gated_resnet_hstack],
                 nonlinearity=resnet_nonlinearity,
                 h=h):
 
